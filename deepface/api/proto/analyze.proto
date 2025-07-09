@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package deepface.api.proto;
+
+import "common.proto";
+
+message AnalyzeRequest {
+    enum Action {
+        AGE = 0;
+        GENDER = 1;
+        EMOTION = 2;
+        RACE = 3;
+    }
+
+    bytes image = 1;
+    repeated Action actions = 2; // Actions to perform, e.g., "age", "gender", "emotion", "race"
+    optional deepface.api.proto.Detectors detector_backend = 3;
+    optional bool enforce_detection = 4;
+    optional bool align = 5;
+    optional bool anti_spoofing = 6;
+}
+
+message AnalyzeResponse {
+
+    message Emotion {
+        double angry = 1;
+        double disgust = 2;
+        double fear = 3;
+        double happy = 4;
+        double neutral = 5;
+        double sad = 6;
+        double surprise = 7;
+    }
+
+    message Gender {
+        double man = 1;
+        double woman = 2;
+    }
+
+    message Race {
+        double asian = 1;
+        double black = 2;
+        double indian = 3;
+        double latino_hispanic = 4;
+        double middle_eastern = 5;
+        double white = 6;
+    }
+
+    message Result {
+        uint32 age = 1;
+        string dominant_emotion = 2;
+        string dominant_gender = 3;
+        string dominant_race = 4;
+        double face_confidence = 5;
+        Emotion emotion = 6;
+        Gender gender = 7;
+        Race race = 8;
+        deepface.api.proto.FacialArea facial_area = 9;
+    }
+
+    repeated Result results = 1;
+}
+
+service AnalyzeService {
+    rpc Analyze(AnalyzeRequest) returns (AnalyzeResponse);
+}
