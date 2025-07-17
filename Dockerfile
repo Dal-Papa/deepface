@@ -1,6 +1,6 @@
 # base image
 FROM python:3.8.12
-LABEL org.opencontainers.image.source https://github.com/serengil/deepface
+LABEL org.opencontainers.image.source=https://github.com/serengil/deepface
 
 # -----------------------------------
 # create required folder
@@ -62,7 +62,5 @@ ENV PYTHONUNBUFFERED=1
 # -----------------------------------
 # run the app (re-configure port if necessary)
 WORKDIR /app/deepface/api/src
-EXPOSE 5000
-EXPOSE 50051
-# CMD ["gunicorn", "--workers=1", "--timeout=3600", "--bind=0.0.0.0:5000", "app:create_app()"]
-ENTRYPOINT [ "sh", "entrypoint.sh" ]
+
+ENTRYPOINT [ "bash", "entrypoint.sh"]
