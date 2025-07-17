@@ -7,13 +7,14 @@ from flask import Flask
 
 import grpc
 
+from deepface.commons.logger import Logger
+
 # Import your generated gRPC modules and service implementations
 import deepface.api.proto.analyze_pb2_grpc as analyze_grpc
 import deepface.api.proto.represent_pb2_grpc as represent_grpc
 import deepface.api.proto.verify_pb2_grpc as verify_grpc
 
-# TODO: Implement these service classes
-# from .grpc_services import AnalyzeService, RepresentService, VerifyService
+logger = Logger()
 
 def serve_grpc(port):
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
@@ -24,7 +25,7 @@ def serve_grpc(port):
     verify_grpc.add_VerifyServiceServicer_to_server(verify_grpc.VerifyService(), server)
     server.add_insecure_port(f"[::]:{port}")
     server.start()
-    print(f"gRPC server running on port {port}")
+    logger.info(f"gRPC server running on port {port}")
     server.wait_for_termination()
 
 if __name__ == "__main__":

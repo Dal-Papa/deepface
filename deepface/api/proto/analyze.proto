@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package deepface.api.proto;
 
+option go_package = "github.com/serengil/deepface/api/proto";
+
 import "common.proto";
 
 message AnalyzeRequest {
