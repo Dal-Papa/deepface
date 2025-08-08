@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"log"
-	"os"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -23,20 +22,9 @@ func main() {
 	}
 	defer conn.Close()
 
-	f, err := os.Open(*flagImg)
-	if err != nil {
-		log.Fatalf("error opening image file: %v", err)
-	}
-	defer f.Close()
-	// Read the image file into a byte slice
-	imageData, err := os.ReadFile(*flagImg)
-	if err != nil {
-		log.Fatalf("error reading image file: %v", err)
-	}
-
-	client := pb.NewAnalyzeServiceClient(conn)
+	client := pb.NewDeepFaceServiceClient(conn)
 	res, err := client.Analyze(ctx, &pb.AnalyzeRequest{
-		Image: imageData,
+		ImageUrl: *flagImg,
 		Actions: []pb.AnalyzeRequest_Action{
 			pb.AnalyzeRequest_AGE,
 			pb.AnalyzeRequest_GENDER,

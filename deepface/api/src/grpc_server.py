@@ -6,10 +6,8 @@ import grpc
 from deepface import DeepFace
 from deepface.commons.logger import Logger
 
-# Import your generated gRPC modules and service implementations
-import deepface.api.proto.analyze_pb2_grpc as analyze_grpc
-import deepface.api.proto.represent_pb2_grpc as represent_grpc
-import deepface.api.proto.verify_pb2_grpc as verify_grpc
+# Import your generated gRPC module and service implementation for the unified service
+import deepface.api.proto.deepface_pb2_grpc as deepface_grpc
 
 logger = Logger()
 
@@ -20,9 +18,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.workers))
-    analyze_grpc.add_AnalyzeServiceServicer_to_server(analyze_grpc.AnalyzeService(), server)
-    represent_grpc.add_RepresentServiceServicer_to_server(represent_grpc.RepresentService(), server)
-    verify_grpc.add_VerifyServiceServicer_to_server(verify_grpc.VerifyService(), server)
+    # Register the unified DeepFaceService
+    deepface_grpc.add_DeepFaceServiceServicer_to_server(deepface_grpc.DeepFaceService(), server)
     server.add_insecure_port(f"[::]:{args.port}")
     server.start()
 

@@ -2,6 +2,16 @@
 FROM tensorflow/tensorflow:2.17.0-gpu
 LABEL org.opencontainers.image.source=https://github.com/Dal-Papa/deepface
 
+# -----------------------------------
+# update image os
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    libhdf5-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 # Update PIP (Python's package manager)
 RUN pip install --upgrade pip
 
@@ -32,7 +42,7 @@ RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted
 # RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org deepface
 # -----------------------------------
 # install deepface from source code (always up-to-date)
-RUN python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org -e .
+RUN python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --ignore-installed blinker -e .
 
 # -----------------------------------
 # some packages are optional in deepface. activate if your task depends on one.
