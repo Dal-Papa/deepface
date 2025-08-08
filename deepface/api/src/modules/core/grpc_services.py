@@ -1,13 +1,8 @@
 import grpc
 from commons import image_utils
 from deepface.commons.logger import Logger
-from deepface.api.proto.common_pb2 import FacialArea
-import deepface.api.proto.analyze_pb2_grpc as analyze_grpc
-import deepface.api.proto.analyze_pb2 as analyze
-import deepface.api.proto.represent_pb2_grpc as represent_grpc
-import deepface.api.proto.represent_pb2 as represent
-import deepface.api.proto.verify_pb2_grpc as verify_grpc
-import deepface.api.proto.verify_pb2 as verify
+from deepface.api.proto.deepface_pb2 import FacialArea, AnalyzeRequest, AnalyzeResponse, RepresentRequest, RepresentResponse, VerifyRequest, VerifyResponse
+from deepface.api.proto.deepface_pb2_grpc import DeepFaceServiceServicer
 
 from deepface import DeepFace
 
@@ -23,14 +18,14 @@ from deepface.api.src.modules.core.common import (
 
 logger = Logger()
 
-class AnalyzeService(analyze_grpc.AnalyzeServiceServicer):
+class DeepFaceService(DeepFaceServiceServicer):
 
-    def Analyze(self, request, context) -> analyze.AnalyzeResponse:
-        response = analyze.AnalyzeResponse()
+    def Analyze(self, request, context) -> AnalyzeResponse:
+        response = AnalyzeResponse()
 
         try:
             demographies = DeepFace.analyze(
-                img_path=image_utils.load_image_from_io_object(request.image),
+                img_path=image_utils.load_image_from_io_object(request.image_url),
                 actions=actions_enum_to_string(request.actions),
                 enforce_detection=request.enforce_detection
                 if request.HasField("enforce_detection") else
@@ -99,15 +94,12 @@ class AnalyzeService(analyze_grpc.AnalyzeServiceServicer):
 
         return response
 
-
-class RepresentService(represent_grpc.RepresentServiceServicer):
-
-    def Represent(self, request, context) -> represent.RepresentResponse:
-        response = represent.RepresentResponse()
+    def Represent(self, request, context) -> RepresentResponse:
+        response = RepresentResponse()
 
         try:
             results = DeepFace.represent(
-                img_path=image_utils.load_image_from_io_object(request.image),
+                img_path=image_utils.load_image_from_io_object(request.image_url),
                 model_name=request.model_name
                 if request.HasField("model_name") else default_model_name,
                 detector_backend=request.detector_backend
@@ -143,46 +135,49 @@ class RepresentService(represent_grpc.RepresentServiceServicer):
 
         return response
 
+    def Verify(self, request, context) -> VerifyResponse:
+        response = VerifyResponse()
 
-class VerifyService(verify_grpc.VerifyServiceServicer):
-
-    def Verify(self, request, context) -> verify.VerifyResponse:
-        results = DeepFace.verify(
-            img1_path=image_utils.load_image_from_io_object(request.img1),
-            img2_path=image_utils.load_image_from_io_object(request.img2),
-            model_name=request.model_name
-            if request.HasField("model_name") else default_model_name,
-            detector_backend=request.detector_backend if
-            request.HasField("detector_backend") else default_detector_backend,
-            distance_metric=request.distance_metric if
-            request.HasField("distance_metric") else default_distance_metric,
-            align=request.align
-            if request.HasField("align") else default_align,
-            enforce_detection=request.enforce_detection
-            if request.HasField("enforce_detection") else
-            default_enforce_detection,
-            anti_spoofing=request.anti_spoofing
-            if request.HasField("anti_spoofing") else default_anti_spoofing,
-        )
-        response = verify.VerifyResponse()
-        if "verified" in results:
-            response.verified = bool(results["verified"])
-        if "distance" in results:
-            response.distance = float(results["distance"])
-        if "facial_areas" in results:
-            facial_areas = results["facial_areas"]
-            response.facial_areas.img1 = get_facial_area(facial_areas["img1"])
-            response.facial_areas.img2 = get_facial_area(facial_areas["img2"])
-        if "threshold" in results:
-            response.threshold = float(results["threshold"])
-        if "time" in results:
-            response.time = float(results["time"])
-        if "similarity_metric" in results:
-            response.similarity_metric = results["similarity_metric"]
-        if "detector_backend" in results:
-            response.detector_backend = results["detector_backend"]
-        if "model" in results:
-            response.model = results["model"]
+        try:
+            results = DeepFace.verify(
+                img1_path=image_utils.load_image_from_io_object(request.image1_url),
+                img2_path=image_utils.load_image_from_io_object(request.image2_url),
+                model_name=request.model_name
+                if request.HasField("model_name") else default_model_name,
+                detector_backend=request.detector_backend if
+                request.HasField("detector_backend") else default_detector_backend,
+                distance_metric=request.distance_metric if
+                request.HasField("distance_metric") else default_distance_metric,
+                align=request.align
+                if request.HasField("align") else default_align,
+                enforce_detection=request.enforce_detection
+                if request.HasField("enforce_detection") else
+                default_enforce_detection,
+                anti_spoofing=request.anti_spoofing
+                if request.HasField("anti_spoofing") else default_anti_spoofing,
+            )
+            if "verified" in results:
+                response.verified = bool(results["verified"])
+            if "distance" in results:
+                response.distance = float(results["distance"])
+            if "facial_areas" in results:
+                facial_areas = results["facial_areas"]
+                response.facial_areas.img1 = get_facial_area(facial_areas["img1"])
+                response.facial_areas.img2 = get_facial_area(facial_areas["img2"])
+            if "threshold" in results:
+                response.threshold = float(results["threshold"])
+            if "time" in results:
+                response.time = float(results["time"])
+            if "similarity_metric" in results:
+                response.similarity_metric = results["similarity_metric"]
+            if "detector_backend" in results:
+                response.detector_backend = results["detector_backend"]
+            if "model" in results:
+                response.model = results["model"]
+        except Exception as err:
+            context.set_details(f"Exception while representing: {str(err)}")
+            context.set_code(grpc.StatusCode.INTERNAL)
+            return response
 
         logger.debug(results)
 
@@ -196,13 +191,13 @@ def actions_enum_to_string(actions) -> list[str]:
     action_names = []
     for action in actions:
         match action:
-            case analyze.AnalyzeRequest.Action.AGE:
+            case AnalyzeRequest.Action.AGE:
                 action_names.append("age")
-            case analyze.AnalyzeRequest.Action.GENDER:
+            case AnalyzeRequest.Action.GENDER:
                 action_names.append("gender")
-            case analyze.AnalyzeRequest.Action.RACE:
+            case AnalyzeRequest.Action.RACE:
                 action_names.append("race")
-            case analyze.AnalyzeRequest.Action.EMOTION:
+            case AnalyzeRequest.Action.EMOTION:
                 action_names.append("emotion")
     return action_names
 

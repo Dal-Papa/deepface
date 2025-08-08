@@ -19,6 +19,17 @@ python -m grpc_tools.protoc \
 
 echo "Fixing imports to use relative paths..."
 # Fix `import X_pb2` → `from . import X_pb2`
-find "$PROTO_DST_DIR" -name "*.py" -exec sed -i '' -E 's/^import (.+_pb2)/from . import \1/' {} \;
+# We want to check if this is ran inside a MacOS environment or Linux
+# as sed -i behaves differently on each platform.
+case "$OSTYPE" in
+  darwin*|bsd*)
+    sed_no_backup=( -i '' )
+    ;; 
+  *)
+    sed_no_backup=( -i )
+    ;;
+esac
+
+find "$PROTO_DST_DIR" -name "*.py" -exec sed "${sed_no_backup[@]}" -E 's/^import (.+_pb2)/from . import \1/' {} \;
 
 echo "Done."

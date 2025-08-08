@@ -41,7 +41,7 @@ echo "Launching app using parameters mode: $MODE, port: $PORT, workers: $WORKERS
 if [ "$MODE" = "http" ]; then
     gunicorn --workers=$WORKERS --timeout=$TIMEOUT --bind=0.0.0.0:$PORT --log-level=$LOG_LEVEL --access-logformat='%(h)s - - [%(t)s] "%(r)s" %(s)s %(b)s %(L)s' --access-logfile=- "app:create_app()"
 elif [ "$MODE" = "grpc" ]; then
-    exec python grpc_server.py $@
+    exec python -m grpc_server.py $@
 else
     echo "Unknown mode: $MODE"
     exit 1
