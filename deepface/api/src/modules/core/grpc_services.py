@@ -28,7 +28,7 @@ class DeepFaceService(DeepFaceServiceServicer):
 
         try:
             demographies = DeepFace.analyze(
-                img_path=image_utils.load_image_from_io_object(request.image_url),
+                img_path=image_utils.load_image_from_web(request.image_url),
                 actions=actions_enum_to_string(request.actions),
                 enforce_detection=request.enforce_detection
                 if request.HasField("enforce_detection") else
@@ -102,7 +102,7 @@ class DeepFaceService(DeepFaceServiceServicer):
 
         try:
             results = DeepFace.represent(
-                img_path=image_utils.load_image_from_io_object(request.image_url),
+                img_path=image_utils.load_image_from_web(request.image_url),
                 model_name=request.model_name
                 if request.HasField("model_name") else default_model_name,
                 detector_backend=request.detector_backend
@@ -143,8 +143,8 @@ class DeepFaceService(DeepFaceServiceServicer):
 
         try:
             results = DeepFace.verify(
-                img1_path=image_utils.load_image_from_io_object(request.image1_url),
-                img2_path=image_utils.load_image_from_io_object(request.image2_url),
+                img1_path=image_utils.load_image_from_web(request.image1_url),
+                img2_path=image_utils.load_image_from_web(request.image2_url),
                 model_name=request.model_name
                 if request.HasField("model_name") else default_model_name,
                 detector_backend=request.detector_backend if
