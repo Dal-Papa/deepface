@@ -24,6 +24,8 @@ class DeepFaceService(DeepFaceServiceServicer):
     def Analyze(self, request, context) -> AnalyzeResponse:
         response = AnalyzeResponse()
 
+        logger.info(f"Received Analyze request: {request}")
+
         try:
             demographies = DeepFace.analyze(
                 img_path=image_utils.load_image_from_io_object(request.image_url),

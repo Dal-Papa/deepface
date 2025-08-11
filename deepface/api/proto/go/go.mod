@@ -1,4 +1,4 @@
-module github.com/serengil/deepface
+module github.com/dal-papa/deepface
 
 go 1.24.4
 

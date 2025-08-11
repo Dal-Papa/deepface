@@ -6,6 +6,8 @@ import grpc
 from deepface import DeepFace
 from deepface.commons.logger import Logger
 
+import tensorflow as tf
+
 # Import your generated gRPC module and service implementation for the unified service
 import deepface.api.proto.deepface_pb2_grpc as deepface_grpc
 
@@ -26,4 +28,10 @@ if __name__ == "__main__":
     # Start the gRPC server
     logger.info(f"gRPC server running on port {args.port}")
     logger.info(f"Welcome to DeepFace API v{DeepFace.__version__}!")
+
+    # Check if TensorFlow is using the GPU
+    if tf.config.list_physical_devices('GPU'):
+        logger.info(f"TensorFlow is using v{len(tf.config.list_physical_devices('GPU'))} GPU(s).")
+    else:
+        logger.info("TensorFlow is not using any GPU.")
     server.wait_for_termination()

@@ -8,7 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "github.com/serengil/deepface/proto"
+	pb "github.com/dal-papa/deepface/proto"
 )
 
 var flagImg = flag.String("img", "", "Path to the image file")
