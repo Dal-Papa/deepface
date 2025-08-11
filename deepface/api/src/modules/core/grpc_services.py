@@ -201,12 +201,17 @@ def get_facial_area(dict) -> FacialArea:
     """
     result = FacialArea()
     for key in ["left_eye", "right_eye", "mouth_left", "mouth_right", "nose"]:
-        value = dict.get(key, [0])
-        if not isinstance(value, (list, tuple)):
+        value = dict.get(key)
+        # If value is None, use [0]. If it's not a list/tuple, wrap it.
+        if value is None:
+            value = [0]
+        elif not isinstance(value, (list, tuple)):
             value = [value]
+        # Filter out None values just in case
+        value = [v if v is not None else 0 for v in value]
         getattr(result, key).extend(value)
-    result.h = int(dict.get("h", 0))
-    result.w = int(dict.get("w", 0))
-    result.x = int(dict.get("x", 0))
-    result.y = int(dict.get("y", 0))
+    result.h = int(dict.get("h") or 0)
+    result.w = int(dict.get("w") or 0)
+    result.x = int(dict.get("x") or 0)
+    result.y = int(dict.get("y") or 0)
     return result
