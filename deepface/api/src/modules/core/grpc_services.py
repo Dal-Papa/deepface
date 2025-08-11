@@ -53,7 +53,8 @@ class DeepFaceService(DeepFaceServiceServicer):
             if "age" in demography:
                 result.age = int(demography["age"])
             if "gender" in demography:
-                result.gender = demography["gender"]
+                result.gender.man = demography["gender"]["man"]
+                result.gender.woman = demography["gender"]["woman"]
             if "face_confidence" in demography:
                 result.face_confidence = float(demography["face_confidence"])
             if "dominant_emotion" in demography:
