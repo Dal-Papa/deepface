@@ -53,50 +53,37 @@ class DeepFaceService(DeepFaceServiceServicer):
                 demography = demography[0]
             result = response.results.add()
             if "age" in demography:
-                result.age = int(demography["age"])
+                result.age = int(demography.get("age", 0))
             if "gender" in demography:
-                result.gender.man = demography["gender"]["Man"]
-                result.gender.woman = demography["gender"]["Woman"]
+                result.gender.man = demography.get("gender", {}).get("Man", 0.0)
+                result.gender.woman = demography.get("gender", {}).get("Woman", 0.0)
             if "face_confidence" in demography:
-                result.face_confidence = float(demography["face_confidence"])
+                result.face_confidence = float(demography.get("face_confidence", 0.0))
             if "dominant_emotion" in demography:
-                result.dominant_emotion = demography["dominant_emotion"]
+                result.dominant_emotion = demography.get("dominant_emotion", "")
             if "dominant_gender" in demography:
-                result.dominant_gender = demography["dominant_gender"]
+                result.dominant_gender = demography.get("dominant_gender", "")
             if "dominant_race" in demography:
-                result.dominant_race = demography["dominant_race"]
+                result.dominant_race = demography.get("dominant_race", "")
             if "race" in demography:
-                if "asian" in demography["race"]:
-                    result.race.asian = demography["race"]["asian"]
-                if "indian" in demography["race"]:
-                    result.race.indian = demography["race"]["indian"]
-                if "black" in demography["race"]:
-                    result.race.black = demography["race"]["black"]
-                if "white" in demography["race"]:
-                    result.race.white = demography["race"]["white"]
-                if "middle eastern" in demography["race"]:
-                    result.race.middle_eastern = demography["race"]["middle eastern"]
-                if "latino hispanic" in demography["race"]:
-                    result.race.latino_hispanic = demography["race"]["latino hispanic"]
+                race = demography.get("race", {})
+                result.race.asian = race.get("asian", 0.0)
+                result.race.indian = race.get("indian", 0.0)
+                result.race.black = race.get("black", 0.0)
+                result.race.white = race.get("white", 0.0)
+                result.race.middle_eastern = race.get("middle eastern", 0.0)
+                result.race.latino_hispanic = race.get("latino hispanic", 0.0)
             if "region" in demography:
-                result.facial_area = get_facial_area(demography["region"])
+                result.facial_area = get_facial_area(demography.get("region", {}))
             if "emotion" in demography:
-                if "angry" in demography["emotion"]:
-                    result.emotion.angry = demography["emotion"]["angry"]
-                if "disgust" in demography["emotion"]:
-                    result.emotion.disgust = demography["emotion"]["disgust"]
-                if "fear" in demography["emotion"]:
-                    result.emotion.fear = demography["emotion"]["fear"]
-                if "happy" in demography["emotion"]:
-                    result.emotion.happy = demography["emotion"]["happy"]
-                if "sad" in demography["emotion"]:
-                    result.emotion.sad = demography["emotion"]["sad"]
-                if "surprise" in demography["emotion"]:
-                    result.emotion.surprise = demography["emotion"]["surprise"]
-                if "neutral" in demography["emotion"]:
-                    result.emotion.neutral = demography["emotion"]["neutral"]
-
-        logger.debug(demographies)
+                emotion = demography.get("emotion", {})
+                result.emotion.angry = emotion.get("angry", 0.0)
+                result.emotion.disgust = emotion.get("disgust", 0.0)
+                result.emotion.fear = emotion.get("fear", 0.0)
+                result.emotion.happy = emotion.get("happy", 0.0)
+                result.emotion.sad = emotion.get("sad", 0.0)
+                result.emotion.surprise = emotion.get("surprise", 0.0)
+                result.emotion.neutral = emotion.get("neutral", 0.0)
 
         return response
 
@@ -213,11 +200,11 @@ def get_facial_area(dict) -> FacialArea:
     Extract the facial area from the dict.
     """
     result = FacialArea()
-    result.left_eye = dict.get("left_eye", [0])
-    result.right_eye = dict.get("right_eye", [0])
-    result.mouth_left = dict.get("mouth_left", [0])
-    result.mouth_right = dict.get("mouth_right", [0])
-    result.nose = dict.get("nose", [0])
+    result.left_eye.extend(dict.get("left_eye", [0]))
+    result.right_eye.extend(dict.get("right_eye", [0]))
+    result.mouth_left.extend(dict.get("mouth_left", [0]))
+    result.mouth_right.extend(dict.get("mouth_right", [0]))
+    result.nose.extend(dict.get("nose", [0]))
     result.h = int(dict.get("h", 0))
     result.w = int(dict.get("w", 0))
     result.x = int(dict.get("x", 0))
