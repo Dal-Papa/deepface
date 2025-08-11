@@ -45,6 +45,8 @@ class DeepFaceService(DeepFaceServiceServicer):
             context.set_details(f"Exception while analyzing: {str(err)}")
             context.set_code(grpc.StatusCode.INTERNAL)
             return response
+        
+        logger.debug(f"Demographies received: {demographies}")
 
         for demography in demographies:
             if isinstance(demography, list):
@@ -53,8 +55,8 @@ class DeepFaceService(DeepFaceServiceServicer):
             if "age" in demography:
                 result.age = int(demography["age"])
             if "gender" in demography:
-                result.gender.man = demography["gender"]["man"]
-                result.gender.woman = demography["gender"]["woman"]
+                result.gender.man = demography["gender"]["Man"]
+                result.gender.woman = demography["gender"]["Woman"]
             if "face_confidence" in demography:
                 result.face_confidence = float(demography["face_confidence"])
             if "dominant_emotion" in demography:
