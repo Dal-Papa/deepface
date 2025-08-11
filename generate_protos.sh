@@ -32,4 +32,9 @@ esac
 
 find "$PROTO_DST_DIR" -name "*.py" -exec sed "${sed_no_backup[@]}" -E 's/^import (.+_pb2)/from . import \1/' {} \;
 
+echo "Adding 'import grpc.experimental' after 'import grpc' in *_pb2_grpc.py files..."
+find "$PROTO_DST_DIR" -name "*_pb2_grpc.py" -exec sed "${sed_no_backup[@]}" -E '/^import grpc$/a\
+import grpc.experimental
+' {} \;
+
 echo "Done."
