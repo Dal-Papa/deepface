@@ -113,13 +113,13 @@ class DeepFaceService(DeepFaceServiceServicer):
         for result in results:
             if isinstance(result, list):
                 result = result[0]
-                rep = response.results.add()
-                if "embedding" in result:
-                    rep.embedding.extend(result["embedding"])
-                if "face_confidence" in result:
-                    rep.face_confidence = float(result["face_confidence"])
-                if "facial_area" in result:
-                    fill_facial_area(rep.facial_area, result["facial_area"])
+            rep = response.results.add()
+            if "embedding" in result:
+                rep.embedding.extend(result["embedding"])
+            if "face_confidence" in result:
+                rep.face_confidence = float(result["face_confidence"])
+            if "facial_area" in result:
+                fill_facial_area(rep.facial_area, result["facial_area"])
 
         logger.debug(results)
 

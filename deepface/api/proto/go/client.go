@@ -38,7 +38,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("error calling Analyze: %v", err)
 		}
-		log.Printf("Analyze response: %+v", res)
+		log.Printf("Analyze response: %+v\n", res)
 	} else if *flagMode == "verify" {
 		res, err := client.Verify(ctx, &pb.VerifyRequest{
 			Image1Url: *flagImg,
@@ -47,6 +47,19 @@ func main() {
 		if err != nil {
 			log.Fatalf("error calling Verify: %v", err)
 		}
-		log.Printf("Verify response: %+v", res)
+		log.Printf("Photo is verified: %t\n", res.Verified)
+		log.Printf("Verify response: %+v\n", res)
+	} else if *flagMode == "represent" {
+		res, err := client.Represent(ctx, &pb.RepresentRequest{
+			ImageUrl: *flagImg,
+		})
+		if err != nil {
+			log.Fatalf("error calling Represent: %v", err)
+		}
+		for _, rep := range res.Results {
+			log.Printf("Representation: %+v\n", rep)
+		}
+	} else {
+		log.Fatalf("Unknown mode: %s", *flagMode)
 	}
 }
