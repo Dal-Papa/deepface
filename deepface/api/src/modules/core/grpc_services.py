@@ -1,7 +1,7 @@
 import grpc
-import grpc.experimental
-from commons import image_utils
+
 from deepface.commons.logger import Logger
+from deepface.commons import image_utils
 from deepface.api.proto.deepface_pb2 import FacialArea, AnalyzeRequest, AnalyzeResponse, RepresentResponse, VerifyResponse
 from deepface.api.proto.deepface_pb2_grpc import DeepFaceServiceServicer
 
