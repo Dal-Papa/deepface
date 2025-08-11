@@ -160,20 +160,24 @@ class DeepFaceService(DeepFaceServiceServicer):
             if "time" in results:
                 response.time = float(results["time"])
             if "similarity_metric" in results:
-                try:
-                    response.similarity_metric = DistanceMetrics(results["similarity_metric"].upper())
-                except ValueError:
+                metric_str = results["similarity_metric"].upper()
+                if hasattr(DistanceMetrics, metric_str):
+                    response.similarity_metric = getattr(DistanceMetrics, metric_str)
+                else:
                     response.similarity_metric = DistanceMetrics.COSINE
             if "detector_backend" in results:
-                try:
-                    response.detector_backend = Detectors(results["detector_backend"].upper())
-                except ValueError:
+                backend_str = results["detector_backend"].upper()
+                if hasattr(Detectors, backend_str):
+                    response.detector_backend = getattr(Detectors, backend_str)
+                else:
                     response.detector_backend = Detectors.OPENCV
             if "model" in results:
-                try:
-                    response.model = Models(results["model"].upper())
-                except ValueError:
+                model_str = results["model"].upper()
+                if hasattr(Models, model_str):
+                    response.model = getattr(Models, model_str)
+                else:
                     response.model = Models.VGG_FACE
+
         except Exception as err:
             context.set_details(f"Exception while representing: {str(err)}")
             context.set_code(grpc.StatusCode.INTERNAL)
