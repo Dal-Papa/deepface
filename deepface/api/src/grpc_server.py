@@ -10,6 +10,7 @@ import tensorflow as tf
 
 # Import your generated gRPC module and service implementation for the unified service
 import deepface.api.proto.deepface_pb2_grpc as deepface_grpc
+from deepface.api.src.modules.core.grpc_services import DeepFaceService
 
 logger = Logger()
 
@@ -21,7 +22,7 @@ if __name__ == "__main__":
 
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=args.workers))
     # Register the unified DeepFaceService
-    deepface_grpc.add_DeepFaceServiceServicer_to_server(deepface_grpc.DeepFaceService(), server)
+    deepface_grpc.add_DeepFaceServiceServicer_to_server(DeepFaceService(), server)
     server.add_insecure_port(f"[::]:{args.port}")
     server.start()
 

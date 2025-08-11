@@ -42,7 +42,7 @@ RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted
 # RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org deepface
 # -----------------------------------
 # install deepface from source code (always up-to-date)
-RUN python -m pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --ignore-installed blinker -e .
+RUN pip install --trusted-host pypi.org --trusted-host pypi.python.org --trusted-host=files.pythonhosted.org --ignore-installed blinker -e .
 
 # -----------------------------------
 # some packages are optional in deepface. activate if your task depends on one.
