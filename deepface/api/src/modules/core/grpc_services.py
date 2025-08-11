@@ -74,7 +74,7 @@ class DeepFaceService(DeepFaceServiceServicer):
                 result.race.middle_eastern = race.get("middle eastern", 0.0)
                 result.race.latino_hispanic = race.get("latino hispanic", 0.0)
             if "region" in demography:
-                result.facial_area = get_facial_area(demography.get("region", {}))
+                fill_facial_area(result.facial_area, demography["region"])
             if "emotion" in demography:
                 emotion = demography.get("emotion", {})
                 result.emotion.angry = emotion.get("angry", 0.0)
@@ -122,7 +122,7 @@ class DeepFaceService(DeepFaceServiceServicer):
                 if "face_confidence" in result:
                     rep.face_confidence = float(result["face_confidence"])
                 if "facial_area" in result:
-                    rep.facial_area = get_facial_area(result["facial_area"])
+                    fill_facial_area(rep.facial_area, result["facial_area"])
 
         logger.debug(results)
 
@@ -155,8 +155,8 @@ class DeepFaceService(DeepFaceServiceServicer):
                 response.distance = float(results["distance"])
             if "facial_areas" in results:
                 facial_areas = results["facial_areas"]
-                response.facial_areas.img1 = get_facial_area(facial_areas["img1"])
-                response.facial_areas.img2 = get_facial_area(facial_areas["img2"])
+                fill_facial_area(response.facial_areas.img1, facial_areas["img1"])
+                fill_facial_area(response.facial_areas.img2, facial_areas["img2"])
             if "threshold" in results:
                 response.threshold = float(results["threshold"])
             if "time" in results:
@@ -194,24 +194,19 @@ def actions_enum_to_string(actions) -> list[str]:
                 action_names.append("emotion")
     return action_names
 
-
-def get_facial_area(dict) -> FacialArea:
+def fill_facial_area(facial_area_msg, data: dict):
     """
-    Extract the facial area from the dict.
+    Fill a FacialArea protobuf message from a dict.
     """
-    result = FacialArea()
     for key in ["left_eye", "right_eye", "mouth_left", "mouth_right", "nose"]:
-        value = dict.get(key)
-        # If value is None, use [0]. If it's not a list/tuple, wrap it.
+        value = data.get(key)
         if value is None:
             value = [0]
         elif not isinstance(value, (list, tuple)):
             value = [value]
-        # Filter out None values just in case
         value = [v if v is not None else 0 for v in value]
-        getattr(result, key).extend(value)
-    result.h = int(dict.get("h") or 0)
-    result.w = int(dict.get("w") or 0)
-    result.x = int(dict.get("x") or 0)
-    result.y = int(dict.get("y") or 0)
-    return result
+        getattr(facial_area_msg, key).extend(value)
+    facial_area_msg.h = int(data.get("h") or 0)
+    facial_area_msg.w = int(data.get("w") or 0)
+    facial_area_msg.x = int(data.get("x") or 0)
+    facial_area_msg.y = int(data.get("y") or 0)
