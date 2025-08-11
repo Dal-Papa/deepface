@@ -200,11 +200,11 @@ def get_facial_area(dict) -> FacialArea:
     Extract the facial area from the dict.
     """
     result = FacialArea()
-    result.left_eye.extend(dict.get("left_eye", [0]))
-    result.right_eye.extend(dict.get("right_eye", [0]))
-    result.mouth_left.extend(dict.get("mouth_left", [0]))
-    result.mouth_right.extend(dict.get("mouth_right", [0]))
-    result.nose.extend(dict.get("nose", [0]))
+    for key in ["left_eye", "right_eye", "mouth_left", "mouth_right", "nose"]:
+        value = dict.get(key, [0])
+        if not isinstance(value, (list, tuple)):
+            value = [value]
+        getattr(result, key).extend(value)
     result.h = int(dict.get("h", 0))
     result.w = int(dict.get("w", 0))
     result.x = int(dict.get("x", 0))
