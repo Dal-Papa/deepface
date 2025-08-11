@@ -2,7 +2,7 @@ import grpc
 
 from deepface.commons.logger import Logger
 from deepface.commons import image_utils
-from deepface.api.proto.deepface_pb2 import FacialArea, AnalyzeRequest, AnalyzeResponse, RepresentResponse, VerifyResponse
+from deepface.api.proto.deepface_pb2 import AnalyzeRequest, AnalyzeResponse, RepresentResponse, VerifyResponse, Models, Detectors, DistanceMetrics
 from deepface.api.proto.deepface_pb2_grpc import DeepFaceServiceServicer
 
 from deepface import DeepFace
@@ -33,9 +33,8 @@ class DeepFaceService(DeepFaceServiceServicer):
                 enforce_detection=request.enforce_detection
                 if request.HasField("enforce_detection") else
                 default_enforce_detection,
-                detector_backend=request.detector_backend
-                if request.HasField("detector_backend") else
-                default_detector_backend,
+                detector_backend=Detectors.Name(request.detector_backend).lower() if 
+                request.HasField("detector_backend") else default_detector_backend,
                 align=request.align
                 if request.HasField("align") else default_align,
                 anti_spoofing=request.anti_spoofing if
@@ -93,14 +92,12 @@ class DeepFaceService(DeepFaceServiceServicer):
         try:
             results = DeepFace.represent(
                 img_path=image_utils.load_image_from_web(request.image_url),
-                model_name=request.model_name
-                if request.HasField("model_name") else default_model_name,
-                detector_backend=request.detector_backend
-                if request.HasField("detector_backend") else
-                default_detector_backend,
-                enforce_detection=request.enforce_detection
-                if request.HasField("enforce_detection") else
-                default_enforce_detection,
+                model_name=Models.Name(request.model_name).lower() if 
+                request.HasField("model_name") else default_model_name,
+                detector_backend=Detectors.Name(request.detector_backend).lower() if 
+                request.HasField("detector_backend") else default_detector_backend,
+                enforce_detection=request.enforce_detection if 
+                request.HasField("enforce_detection") else default_enforce_detection,
                 align=request.align
                 if request.HasField("align") else default_align,
                 anti_spoofing=request.anti_spoofing if
@@ -132,14 +129,15 @@ class DeepFaceService(DeepFaceServiceServicer):
         response = VerifyResponse()
 
         try:
+
             results = DeepFace.verify(
                 img1_path=image_utils.load_image_from_web(request.image1_url),
                 img2_path=image_utils.load_image_from_web(request.image2_url),
-                model_name=request.model_name
-                if request.HasField("model_name") else default_model_name,
-                detector_backend=request.detector_backend if
+                model_name=Models.Name(request.model_name).lower() if
+                request.HasField("model_name") else default_model_name,
+                detector_backend=Detectors.Name(request.detector_backend).lower() if
                 request.HasField("detector_backend") else default_detector_backend,
-                distance_metric=request.distance_metric if
+                distance_metric=DistanceMetrics.Name(request.distance_metric).lower() if
                 request.HasField("distance_metric") else default_distance_metric,
                 align=request.align
                 if request.HasField("align") else default_align,

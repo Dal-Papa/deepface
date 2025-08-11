@@ -12,6 +12,8 @@ import (
 )
 
 var flagImg = flag.String("img", "", "Path to the image file")
+var flagImg2 = flag.String("img2", "", "Path to the second image file for verification")
+var flagMode = flag.String("mode", "analyze", "Mode of operation: analyze, detect, or verify")
 
 func main() {
 	ctx := context.Background()
@@ -23,16 +25,28 @@ func main() {
 	defer conn.Close()
 
 	client := pb.NewDeepFaceServiceClient(conn)
-	res, err := client.Analyze(ctx, &pb.AnalyzeRequest{
-		ImageUrl: *flagImg,
-		Actions: []pb.AnalyzeRequest_Action{
-			pb.AnalyzeRequest_AGE,
-			pb.AnalyzeRequest_GENDER,
-			pb.AnalyzeRequest_RACE,
-		},
-	})
-	if err != nil {
-		log.Fatalf("error calling Analyze: %v", err)
+	if *flagMode == "analyze" {
+
+		res, err := client.Analyze(ctx, &pb.AnalyzeRequest{
+			ImageUrl: *flagImg,
+			Actions: []pb.AnalyzeRequest_Action{
+				pb.AnalyzeRequest_AGE,
+				pb.AnalyzeRequest_GENDER,
+				pb.AnalyzeRequest_RACE,
+			},
+		})
+		if err != nil {
+			log.Fatalf("error calling Analyze: %v", err)
+		}
+		log.Printf("Analyze response: %+v", res)
+	} else if *flagMode == "verify" {
+		res, err := client.Verify(ctx, &pb.VerifyRequest{
+			Image1Url: *flagImg,
+			Image2Url: *flagImg2,
+		})
+		if err != nil {
+			log.Fatalf("error calling Verify: %v", err)
+		}
+		log.Printf("Verify response: %+v", res)
 	}
-	log.Printf("Analyze response: %+v", res)
 }
