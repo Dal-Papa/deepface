@@ -92,7 +92,7 @@ class DeepFaceService(DeepFaceServiceServicer):
         try:
             results = DeepFace.represent(
                 img_path=image_utils.load_image_from_web(request.image_url),
-                model_name=model_name_enum_to_string(Models.Name(request.model_name)) if
+                model_name=model_name_enum_to_string(request.model_name) if
                 request.HasField("model_name") else default_model_name,
                 detector_backend=Detectors.Name(request.detector_backend).lower() if
                 request.HasField("detector_backend") else default_detector_backend,
@@ -133,7 +133,7 @@ class DeepFaceService(DeepFaceServiceServicer):
             results = DeepFace.verify(
                 img1_path=image_utils.load_image_from_web(request.image1_url),
                 img2_path=image_utils.load_image_from_web(request.image2_url),
-                model_name=model_name_enum_to_string(Models.Name(request.model_name)) if
+                model_name=model_name_enum_to_string(request.model_name) if
                 request.HasField("model_name") else default_model_name,
                 detector_backend=Detectors.Name(request.detector_backend).lower() if
                 request.HasField("detector_backend") else default_detector_backend,
