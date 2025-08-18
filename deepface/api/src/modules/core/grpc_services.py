@@ -92,9 +92,9 @@ class DeepFaceService(DeepFaceServiceServicer):
         try:
             results = DeepFace.represent(
                 img_path=image_utils.load_image_from_web(request.image_url),
-                model_name=Models.Name(request.model_name).lower() if 
+                model_name=model_name_enum_to_string(Models.Name(request.model_name)) if
                 request.HasField("model_name") else default_model_name,
-                detector_backend=Detectors.Name(request.detector_backend).lower() if 
+                detector_backend=Detectors.Name(request.detector_backend).lower() if
                 request.HasField("detector_backend") else default_detector_backend,
                 enforce_detection=request.enforce_detection if 
                 request.HasField("enforce_detection") else default_enforce_detection,
@@ -133,7 +133,7 @@ class DeepFaceService(DeepFaceServiceServicer):
             results = DeepFace.verify(
                 img1_path=image_utils.load_image_from_web(request.image1_url),
                 img2_path=image_utils.load_image_from_web(request.image2_url),
-                model_name=Models.Name(request.model_name).lower() if
+                model_name=model_name_enum_to_string(Models.Name(request.model_name)) if
                 request.HasField("model_name") else default_model_name,
                 detector_backend=Detectors.Name(request.detector_backend).lower() if
                 request.HasField("detector_backend") else default_detector_backend,
@@ -221,3 +221,33 @@ def fill_facial_area(facial_area_msg, data: dict):
     facial_area_msg.w = int(data.get("w") or 0)
     facial_area_msg.x = int(data.get("x") or 0)
     facial_area_msg.y = int(data.get("y") or 0)
+
+def model_name_enum_to_string(model_name) -> str:
+    """
+    Convert a model name enum to a string.
+    """
+    match model_name:
+        case Models.VGG_FACE:
+            return "VGG-Face"
+        case Models.OPENFACE:
+            return "OpenFace"
+        case Models.FACENET:
+            return "Facenet"
+        case Models.FACENET512:
+            return "Facenet512"
+        case Models.DEEPFACE:
+            return "DeepFace"
+        case Models.DEEPID:
+            return "DeepID"
+        case Models.DLIB_MODEL:
+            return "Dlib"
+        case Models.ARCFACE:
+            return "ArcFace"
+        case Models.SFACE:
+            return "SFace"
+        case Models.GHOSTFACENET:
+            return "GhostFaceNet"
+        case Models.BUFFALO_L:
+            return "Buffalo_L"
+        case _:
+            return "unknown"
