@@ -137,15 +137,15 @@ class Fasnet:
         label = np.argmax(prediction)
         is_real = True if label == 1 else False  # pylint: disable=simplifiable-if-expression
         score = prediction[0][label] / 2
-        print(f"Fasnet spoofing prediction: label={label} is_real={is_real}, score={score}, raw={prediction}")
+        print(f"Fasnet spoofing prediction: label={label} is_real={is_real}, score={score}, first_result={first_result}, second_result={second_result}")
         print(f"- First model prediction: {first_result}")
-        print(f"-- Is Spoof......: {first_result[0]}")
-        print(f"-- Is Real.......: {first_result[1]}")
-        print(f"-- Is Uncertain..: {first_result[2]}")
+        print(f"-- Is Spoof......: {first_result[0][0]}")
+        print(f"-- Is Real.......: {first_result[0][1]}")
+        print(f"-- Is Uncertain..: {first_result[0][2]}")
         print(f"- Second model prediction: {second_result}")
-        print(f"-- Is Spoof......: {second_result[0]}")
-        print(f"-- Is Real.......: {second_result[1]}")
-        print(f"-- Is Uncertain..: {second_result[2]}")
+        print(f"-- Is Spoof......: {second_result[0][0]}")
+        print(f"-- Is Real.......: {second_result[0][1]}")
+        print(f"-- Is Uncertain..: {second_result[0][2]}")
 
         return is_real, score
 
