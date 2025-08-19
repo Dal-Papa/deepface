@@ -43,7 +43,7 @@ class Fasnet:
         )
 
         second_model_weight_file = weight_utils.download_weights_if_necessary(
-            file_name="4_0_0_80x80_MiniFASNetV1SE.pth",
+            file_name="AntiSpoofing_bin_1.5_128.pth",
             source_url=SECOND_WEIGHTS_URL,
         )
 
