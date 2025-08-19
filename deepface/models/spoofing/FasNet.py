@@ -136,7 +136,9 @@ class Fasnet:
         label = np.argmax(prediction)
         is_real = True if label == 1 else False  # pylint: disable=simplifiable-if-expression
         score = prediction[0][label] / 2
-        print(f"Fasnet spoofing prediction: is_real={is_real}, score={score}, raw={prediction}")
+        print(f"Fasnet spoofing prediction: label={label} is_real={is_real}, score={score}, raw={prediction}")
+        print(f"- First model prediction: {first_result}")
+        print(f"- Second model prediction: {second_result}")
 
         return is_real, score
 
