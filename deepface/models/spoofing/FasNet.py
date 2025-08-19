@@ -77,7 +77,18 @@ class Fasnet:
         keys = iter(state_dict)
         first_layer_name = keys.__next__()
 
-        if first_layer_name.find("module.") >= 0:
+        if first_layer_name.find("module.model.") >= 0:
+            # Handle case where keys have "module.model." prefix
+            from collections import OrderedDict
+
+            new_state_dict = OrderedDict()
+            for key, value in state_dict.items():
+                # Only process keys that start with "module.model." and ignore others like "module.FTGenerator."
+                if key.startswith("module.model."):
+                    name_key = key[13:]  # Remove "module.model." prefix (13 characters)
+                    new_state_dict[name_key] = value
+            second_model.load_state_dict(new_state_dict)
+        elif first_layer_name.find("module.") >= 0:
             from collections import OrderedDict
 
             new_state_dict = OrderedDict()
