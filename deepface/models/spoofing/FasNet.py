@@ -50,11 +50,62 @@ class Fasnet:
         # guarantees Fasnet imported and torch installed
         from deepface.models.spoofing import FasNetBackbone
 
+        # Create custom configuration for the AntiSpoofing_bin_1.5_128.pth weights
+        # This configuration matches the channel dimensions found in the checkpoint
+        def create_custom_minifasnet_se():
+            """Create a MiniFASNetSE with configuration matching AntiSpoofing_bin_1.5_128.pth"""
+            # Custom keep_dict that matches the checkpoint architecture
+            custom_keep_dict = [
+                32, 32,       # Initial conv layers
+                103, 103,     # Conv2_dw layers  
+                64,           # Conv_23 input channels
+                13, 13,       # Conv_23 expansion (matches checkpoint: 13 channels)
+                64,           # Conv_3 input
+                26, 26,       # Conv_3.0 expansion
+                64,           # Conv_3.1 input  
+                13, 13,       # Conv_3.1 expansion (matches checkpoint: 13 channels)
+                64,           # Conv_3.2 input
+                26, 26,       # Conv_3.2 expansion
+                64,           # Conv_3.3 input
+                13, 13,       # Conv_3.3 expansion (matches checkpoint: 13 channels)
+                64,           # Conv_34 input
+                52, 52,       # Conv_34 expansion
+                64,           # Conv_4 input  
+                231, 231,     # Conv_4.0 expansion (matches checkpoint: 231 channels)
+                128,          # Conv_4.1 input
+                154, 154,     # Conv_4.1 expansion (matches checkpoint: 154 channels)
+                128,          # Conv_4.2 input
+                52, 52,       # Conv_4.2 expansion
+                128,          # Conv_4.3 input
+                77, 77,       # Conv_4.3 expansion (matches checkpoint: 77 channels)
+                128,          # Conv_4.4 input
+                26, 26,       # Conv_4.4 expansion
+                128,          # Conv_4.5 input
+                52, 52,       # Conv_4.5 expansion
+                128,          # Conv_45 input
+                26, 26,       # Conv_45 expansion
+                128,          # Conv_5 input
+                52, 52,       # Conv_5.0 expansion
+                128,          # Conv_5.1 input
+                26, 26,       # Conv_5.1 expansion
+                128,          # Final conv input
+                512, 512,     # Final conv output
+            ]
+            
+            return FasNetBackbone.MiniFASNetSE(
+                custom_keep_dict, 
+                embedding_size=128, 
+                conv6_kernel=(8, 8),  # Matches checkpoint kernel size
+                drop_p=0.75, 
+                num_classes=2,        # Matches checkpoint num_classes
+                img_channel=3
+            )
+
         # Fasnet will use 2 distinct models to predict, then it will find the sum of predictions
         # to make a final prediction
 
         first_model = FasNetBackbone.MiniFASNetV2(conv6_kernel=(5, 5)).to(device)
-        second_model = FasNetBackbone.MiniFASNetV1SE(conv6_kernel=(5, 5), num_classes=2).to(device)
+        second_model = create_custom_minifasnet_se().to(device)
 
         # load model weight for first model
         state_dict = torch.load(first_model_weight_file, map_location=device)
