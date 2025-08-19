@@ -54,7 +54,7 @@ class Fasnet:
         # to make a final prediction
 
         first_model = FasNetBackbone.MiniFASNetV2(conv6_kernel=(5, 5)).to(device)
-        second_model = FasNetBackbone.MiniFASNetV1SE(conv6_kernel=(5, 5)).to(device)
+        second_model = FasNetBackbone.MiniFASNetV1SE(conv6_kernel=(5, 5), num_classes=2).to(device)
 
         # load model weight for first model
         state_dict = torch.load(first_model_weight_file, map_location=device)
@@ -131,8 +131,8 @@ class Fasnet:
             second_result = F.softmax(second_result).cpu().numpy()
 
         prediction = np.zeros((1, 3))
-        prediction += first_result
-        prediction += second_result
+        # prediction += first_result
+        # prediction += second_result
 
         label = np.argmax(prediction)
         is_real = True if label == 1 else False  # pylint: disable=simplifiable-if-expression
@@ -143,9 +143,9 @@ class Fasnet:
         print(f"-- Is Real.......: {first_result[0][1]}")
         print(f"-- Is Uncertain..: {first_result[0][2]}")
         print(f"- Second model prediction: {second_result}")
-        print(f"-- Is Spoof......: {second_result[0][0]}")
-        print(f"-- Is Real.......: {second_result[0][1]}")
-        print(f"-- Is Uncertain..: {second_result[0][2]}")
+        # print(f"-- Is Spoof......: {second_result[0][0]}")
+        # print(f"-- Is Real.......: {second_result[0][1]}")
+        # print(f"-- Is Uncertain..: {second_result[0][2]}")
 
         return is_real, score
 
