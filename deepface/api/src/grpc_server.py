@@ -32,7 +32,7 @@ if __name__ == "__main__":
         experimental_non_blocking=True,
         experimental_thread_pool=threadPool,
     )
-    health_servicer.set_serving_status("", health_pb2.HealthCheckResponse.SERVING)
+    health_servicer.set("", health_pb2.HealthCheckResponse.SERVING)
     health_pb2_grpc.add_HealthServicer_to_server(health_servicer, server)
     server.add_insecure_port(f"[::]:{args.port}")
     server.start()
