@@ -85,6 +85,14 @@ class Fasnet:
                 name_key = key[7:]
                 new_state_dict[name_key] = value
             second_model.load_state_dict(new_state_dict)
+        elif first_layer_name.find("model.") >= 0:
+            from collections import OrderedDict
+
+            new_state_dict = OrderedDict()
+            for key, value in state_dict.items():
+                name_key = key[6:]  # Remove "model." prefix (6 characters)
+                new_state_dict[name_key] = value
+            second_model.load_state_dict(new_state_dict)
         else:
             second_model.load_state_dict(state_dict)
 
