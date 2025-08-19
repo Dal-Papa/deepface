@@ -183,16 +183,13 @@ class Fasnet:
         # Use larger input size for the second model to accommodate 8x8 kernels
         second_img = crop(img, (x, y, w, h), 4, 128, 128)
 
-        test_transform = Compose(
-            [
-                ToTensor(),
-            ]
-        )
+        test_transform_first = Compose([ToTensor()])  # First model: no normalization
+        test_transform_second = Compose([ToTensorNormalized()])  # Second model: with normalization
 
-        first_img = test_transform(first_img)
+        first_img = test_transform_first(first_img)
         first_img = first_img.unsqueeze(0).to(self.device)
 
-        second_img = test_transform(second_img)
+        second_img = test_transform_second(second_img)
         second_img = second_img.unsqueeze(0).to(self.device)
 
         with torch.no_grad():
@@ -270,6 +267,19 @@ class Compose:
 class ToTensor:
     def __call__(self, pic):
         return to_tensor(pic)
+
+
+class ToTensorNormalized:
+    def __call__(self, pic):
+        """Convert to tensor and normalize to [0, 1] range"""
+        import torch
+        
+        # handle numpy array
+        if pic.ndim == 2:
+            pic = pic.reshape((pic.shape[0], pic.shape[1], 1))
+
+        img = torch.from_numpy(pic.transpose((2, 0, 1)))
+        return img.float().div(255)  # Normalize to [0, 1]
 
 
 def _get_new_box(src_w, src_h, bbox, scale):
