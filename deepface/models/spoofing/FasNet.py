@@ -180,7 +180,8 @@ class Fasnet:
 
         x, y, w, h = facial_area
         first_img = crop(img, (x, y, w, h), 2.7, 80, 80)
-        second_img = crop(img, (x, y, w, h), 4, 80, 80)
+        # Use larger input size for the second model to accommodate 8x8 kernels
+        second_img = crop(img, (x, y, w, h), 4, 112, 112)
 
         test_transform = Compose(
             [
