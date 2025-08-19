@@ -13,7 +13,8 @@ logger = Logger()
 
 # pylint: disable=line-too-long, too-few-public-methods, nested-min-max
 FIRST_WEIGHTS_URL="https://github.com/minivision-ai/Silent-Face-Anti-Spoofing/raw/master/resources/anti_spoof_models/2.7_80x80_MiniFASNetV2.pth"
-SECOND_WEIGHTS_URL="https://github.com/minivision-ai/Silent-Face-Anti-Spoofing/raw/master/resources/anti_spoof_models/4_0_0_80x80_MiniFASNetV1SE.pth"
+# SECOND_WEIGHTS_URL="https://github.com/minivision-ai/Silent-Face-Anti-Spoofing/raw/master/resources/anti_spoof_models/4_0_0_80x80_MiniFASNetV1SE.pth"
+SECOND_WEIGHTS_URL="https://github.com/hairymax/Face-AntiSpoofing/raw/refs/heads/main/saved_models/AntiSpoofing_bin_1.5_128.pth"
 
 class Fasnet:
     """
@@ -138,7 +139,13 @@ class Fasnet:
         score = prediction[0][label] / 2
         print(f"Fasnet spoofing prediction: label={label} is_real={is_real}, score={score}, raw={prediction}")
         print(f"- First model prediction: {first_result}")
+        print(f"-- Is Spoof......: {first_result[0]}")
+        print(f"-- Is Real.......: {first_result[1]}")
+        print(f"-- Is Uncertain..: {first_result[2]}")
         print(f"- Second model prediction: {second_result}")
+        print(f"-- Is Spoof......: {second_result[0]}")
+        print(f"-- Is Real.......: {second_result[1]}")
+        print(f"-- Is Uncertain..: {second_result[2]}")
 
         return is_real, score
 
