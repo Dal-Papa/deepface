@@ -199,8 +199,16 @@ class Fasnet:
             first_result = self.first_model.forward(first_img)
             first_result = F.softmax(first_result).cpu().numpy()
 
-            second_result = self.second_model.forward(second_img)
-            second_result = F.softmax(second_result).cpu().numpy()
+            # Debug the second model forward pass
+            print(f"Second img shape: {second_img.shape}")
+            print(f"Second img min/max: {second_img.min():.3f}/{second_img.max():.3f}")
+
+            second_result_raw = self.second_model.forward(second_img)
+            print(f"Second model raw output: {second_result_raw}")
+            print(f"Second model raw output shape: {second_result_raw.shape}")
+
+            second_result = F.softmax(second_result_raw).cpu().numpy()
+            print(f"Second model after softmax: {second_result}")
 
         prediction = np.zeros((1, 3))
         # prediction += first_result
