@@ -90,8 +90,10 @@ class Fasnet:
 
             new_state_dict = OrderedDict()
             for key, value in state_dict.items():
-                name_key = key[6:]  # Remove "model." prefix (6 characters)
-                new_state_dict[name_key] = value
+                # Only process keys that start with "model." and ignore others like "FTGenerator."
+                if key.startswith("model."):
+                    name_key = key[6:]  # Remove "model." prefix (6 characters)
+                    new_state_dict[name_key] = value
             second_model.load_state_dict(new_state_dict)
         else:
             second_model.load_state_dict(state_dict)
