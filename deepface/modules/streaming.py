@@ -1,7 +1,7 @@
 # built-in dependencies
 import os
 import time
-from typing import List, Tuple, Optional
+from typing import Dict, List, Tuple, Optional
 import traceback
 
 # 3rd party dependencies
