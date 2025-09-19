@@ -101,7 +101,7 @@ class Fasnet:
             img (np.ndarray): pre loaded image
             facial_area (list or tuple): facial rectangle area coordinates with x, y, w, h respectively
         Returns:
-            result (tuple): a result tuple consisting of is_real and score
+            result (tuple): a result tuple consisting of spoof_confidence, real_confidence, and uncertainty
         """
         import torch
         import torch.nn.functional as F
@@ -143,7 +143,7 @@ class Fasnet:
         print(f"-- Is Uncertain..: {first_result[0][2]}")
         print(f"- Second model prediction: {second_result}")
 
-        return is_real, score
+        return prediction[0][0], prediction[0][1], prediction[0][2]
 
 
 # subsdiary classes and functions
