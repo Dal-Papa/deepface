@@ -575,7 +575,7 @@ def find_batched(
         antispoof_scores = source_obj.get("antispoof_scores", None)
 
         if anti_spoofing is True and is_real is False:
-        spoof_checks.append((is_real, antispoof_scores))
+            spoof_checks.append((is_real, antispoof_scores))
             target_embeddings.append(np.zeros(embeddings.shape[1]))
             source_regions.append(source_obj["facial_area"])
             target_thresholds.append(
@@ -602,7 +602,7 @@ def find_batched(
 
         target_threshold = threshold or verification.find_threshold(model_name, distance_metric)
         target_thresholds.append(target_threshold)
-        spoof_checks.append((is_real, antispoof_score))
+        spoof_checks.append((is_real, antispoof_scores))
 
     target_embeddings = np.array(target_embeddings)  # (M, D)
     target_thresholds = np.array(target_thresholds)  # (M,)
