@@ -143,7 +143,7 @@ class Fasnet:
         print(f"-- Is Uncertain..: {first_result[0][2]}")
         print(f"- Second model prediction: {second_result}")
 
-        return prediction[0][0], prediction[0][1], prediction[0][2]
+        return prediction[0][0] / 2, prediction[0][1] / 2, prediction[0][2] / 2
 
 
 # subsdiary classes and functions
