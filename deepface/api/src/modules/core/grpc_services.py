@@ -176,6 +176,10 @@ def landmarks_to_proto(landmarks: Optional[FaceLandmarks], proto_landmarks):
     """
     if landmarks is None:
         return
+    proto_landmarks.x = landmarks.x
+    proto_landmarks.y = landmarks.y
+    proto_landmarks.w = landmarks.w
+    proto_landmarks.h = landmarks.h    
     proto_landmarks.left_eye.extend(landmarks.left_eye or [])
     proto_landmarks.right_eye.extend(landmarks.right_eye or [])
     proto_landmarks.mouth_left.extend(landmarks.mouth_left or [])
