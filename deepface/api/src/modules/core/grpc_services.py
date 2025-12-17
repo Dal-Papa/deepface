@@ -50,7 +50,7 @@ class DeepFaceService(DeepFaceServiceServicer):
             spoofing_scores_to_proto(face.spoofing, result.spoofing_scores)
 
             if face.demographics is not None:
-                result.age = face.demographics.age or 0
+                result.age = max(0, face.demographics.age or 0)
 
                 result.dominant_gender = face.demographics.dominant_gender() or ""
                 result.gender.man = face.demographics.genders.get("Man", 0.0)
@@ -176,16 +176,15 @@ def landmarks_to_proto(landmarks: Optional[FaceLandmarks], proto_landmarks):
     """
     if landmarks is None:
         return
-    proto_landmarks.x = landmarks.x
-    proto_landmarks.y = landmarks.y
-    proto_landmarks.w = landmarks.w
-    proto_landmarks.h = landmarks.h    
-    proto_landmarks.left_eye.extend(landmarks.left_eye or [])
-    proto_landmarks.right_eye.extend(landmarks.right_eye or [])
-    proto_landmarks.mouth_left.extend(landmarks.mouth_left or [])
-    proto_landmarks.mouth_right.extend(landmarks.mouth_right or [])
-    proto_landmarks.nose.extend(landmarks.nose or [])
-
+    proto_landmarks.x = max(0, landmarks.x)
+    proto_landmarks.y = max(0, landmarks.y)
+    proto_landmarks.w = max(0, landmarks.w)
+    proto_landmarks.h = max(0, landmarks.h)
+    proto_landmarks.left_eye.extend([max(0, int(v)) for v in landmarks.left_eye] if landmarks.left_eye else [])
+    proto_landmarks.right_eye.extend([max(0, int(v)) for v in landmarks.right_eye] if landmarks.right_eye else [])
+    proto_landmarks.mouth_left.extend([max(0, int(v)) for v in landmarks.mouth_left] if landmarks.mouth_left else [])
+    proto_landmarks.mouth_right.extend([max(0, int(v)) for v in landmarks.mouth_right] if landmarks.mouth_right else [])
+    proto_landmarks.nose.extend([max(0, int(v)) for v in landmarks.nose] if landmarks.nose else [])
 def face_quality_to_proto(quality: Optional[FaceQuality], proto_quality):
     """
     Convert face quality to proto format.
