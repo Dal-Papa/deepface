@@ -15,9 +15,9 @@ class FaceQuality:
 
     def to_dict(self):
         return {
-            "sharpness": self.sharpness,
-            "brightness": self.brightness,
-            "contrast": self.contrast,
+            "sharpness": float(self.sharpness),
+            "brightness": float(self.brightness),
+            "contrast": float(self.contrast),
         }
 
 
@@ -30,9 +30,9 @@ class FaceSpoofing:
 
     def to_dict(self):
         return {
-            "spoof_confidence": self.spoof_confidence,
-            "real_confidence": self.real_confidence,
-            "uncertainty_confidence": self.uncertainty_confidence,
+            "spoof_confidence": float(self.spoof_confidence),
+            "real_confidence": float(self.real_confidence),
+            "uncertainty_confidence": float(self.uncertainty_confidence),
         }
 
 
@@ -171,15 +171,15 @@ class FaceLandmarks:
 
     def to_dict(self):
         return {
-            "x": self.x,
-            "y": self.y,
-            "w": self.w,
-            "h": self.h,
-            "left_eye": self.left_eye,
-            "right_eye": self.right_eye,
-            "mouth_right": self.mouth_right,
-            "mouth_left": self.mouth_left,
-            "nose": self.nose,
+            "x": int(self.x),
+            "y": int(self.y),
+            "w": int(self.w),
+            "h": int(self.h),
+            "left_eye": [int(coord) for coord in self.left_eye] if self.left_eye else None,
+            "right_eye": [int(coord) for coord in self.right_eye] if self.right_eye else None,
+            "mouth_right": [int(coord) for coord in self.mouth_right] if self.mouth_right else None,
+            "mouth_left": [int(coord) for coord in self.mouth_left] if self.mouth_left else None,
+            "nose": [int(coord) for coord in self.nose] if self.nose else None,
         }
 
 
@@ -192,9 +192,9 @@ class FacePose:
 
     def to_dict(self):
         return {
-            "roll": self.roll,
-            "pitch": self.pitch,
-            "yaw": self.yaw,
+            "roll": float(self.roll),
+            "pitch": float(self.pitch),
+            "yaw": float(self.yaw),
         }
 
 
@@ -223,12 +223,12 @@ class FaceDemographics:
 
     def to_dict(self):
         return {
-            "age": self.age,
-            "emotions": self.emotions,
+            "age": int(self.age) if self.age is not None else None,
+            "emotions": {k: float(v) for k, v in self.emotions.items()} if self.emotions else None,
             "dominant_emotion": self.dominant_emotion(),
-            "genders": self.genders,
+            "genders": {k: float(v) for k, v in self.genders.items()} if self.genders else None,
             "dominant_gender": self.dominant_gender(),
-            "races": self.races,
+            "races": {k: float(v) for k, v in self.races.items()} if self.races else None,
             "dominant_race": self.dominant_race(),
         }
 
@@ -368,6 +368,7 @@ class Face:
             "pose": self.pose.to_dict() if self.pose else None,
             "demographics": self.demographics.to_dict() if self.demographics else None,
             "spoofing": self.spoofing.to_dict() if self.spoofing else None,
+            "embedding": [float(e) for e in self.embedding] if self.embedding is not None else None,
         }
 
 def _rotate_point(point: tuple[float, float], origin: tuple[float, float], angle: float) -> tuple[float, float]:

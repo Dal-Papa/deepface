@@ -21,10 +21,10 @@ class Verification:
             "face1": self.face1.to_dict() if self.face1 else None,
             "face2": self.face2.to_dict() if self.face2 else None,
             "verified": self.verified,
-            "distance": self.distance,
-            "threshold": self.threshold,
+            "distance": float(self.distance),
+            "threshold": float(self.threshold),
             "detector_backend": self.detector_backend,
             "model": self.model,
             "metric": self.metric,
-            "time": self.time,
+            "time": float(self.time),
         }

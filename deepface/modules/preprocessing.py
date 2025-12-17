@@ -55,7 +55,7 @@ def normalize_input(img: np.ndarray, normalization: str = "base") -> np.ndarray:
         img[..., 1] -= 103.8827
         img[..., 2] -= 131.0912
 
-    elif normalization == "ArcFace":
+    elif normalization == "ArcFace" or normalization == "Buffalo_L":
         # Reference study: The faces are cropped and resized to 112×112,
         # and each pixel (ranged between [0, 255]) in RGB images is normalised
         # by subtracting 127.5 then divided by 128.
