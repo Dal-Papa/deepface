@@ -12,8 +12,6 @@ from deepface.commons import image_utils
 from deepface.commons.logger import Logger
 from deepface.api.src.modules.core.common import (
     default_detector_backend,
-    default_enforce_detection,
-    default_align,
     default_anti_spoofing,
     default_max_faces,
     default_model_name,
@@ -94,8 +92,6 @@ def represent():
         img_path=img,
         model_name=input_args.get("model_name", default_model_name),
         detector_backend=input_args.get("detector_backend", default_detector_backend),
-        enforce_detection=bool(input_args.get("enforce_detection", default_enforce_detection)),
-        align=bool(input_args.get("align", default_align)),
         anti_spoofing=bool(input_args.get("anti_spoofing", default_anti_spoofing)),
         max_faces=int(input_args.get("max_faces", default_max_faces)),
     )
@@ -127,8 +123,6 @@ def verify():
         model_name=input_args.get("model_name", default_model_name),
         detector_backend=input_args.get("detector_backend", default_detector_backend),
         distance_metric=input_args.get("distance_metric", default_distance_metric),
-        align=bool(input_args.get("align", default_align)),
-        enforce_detection=bool(input_args.get("enforce_detection", default_enforce_detection)),
         anti_spoofing=bool(input_args.get("anti_spoofing", default_anti_spoofing)),
     )
 
@@ -167,8 +161,6 @@ def analyze():
         img_path=img,
         actions=actions,
         detector_backend=input_args.get("detector_backend", default_detector_backend),
-        enforce_detection=bool(input_args.get("enforce_detection", default_enforce_detection)),
-        align=bool(input_args.get("align", default_align)),
         anti_spoofing=bool(input_args.get("anti_spoofing", default_anti_spoofing)),
     )
 

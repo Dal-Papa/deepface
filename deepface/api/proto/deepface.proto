@@ -45,21 +45,33 @@ enum DistanceMetrics {
 }
 
 message FacialArea {
-    repeated uint32 left_eye = 1;
-    repeated uint32 right_eye = 2;
-    repeated uint32 mouth_left = 3;
-    repeated uint32 mouth_right = 4;
-    repeated uint32 nose = 5;
-    uint32 h = 6;
-    uint32 w = 7;
-    uint32 x = 8;
-    uint32 y = 9;
+    repeated int64 left_eye = 1;
+    repeated int64 right_eye = 2;
+    repeated int64 mouth_left = 3;
+    repeated int64 mouth_right = 4;
+    repeated int64 nose = 5;
+    int64 h = 6;
+    int64 w = 7;
+    int64 x = 8;
+    int64 y = 9;
 }
 
 message SpoofingScores {
     float spoof_confidence = 1;
     float real_confidence = 2;
     float uncertainty = 3;
+}
+
+message FaceQuality {
+    float sharpness = 1;
+    float brightness = 2;
+    float contrast = 3;
+}
+
+message FacePose {
+    float yaw = 1;
+    float pitch = 2;
+    float roll = 3;
 }
 
 // ----------------
@@ -77,8 +89,8 @@ message AnalyzeRequest {
     string image_url = 1;
     repeated Action actions = 2; // Actions to perform, e.g., "age", "gender", "emotion", "race"
     optional Detectors detector_backend = 3;
-    optional bool enforce_detection = 4;
-    optional bool align = 5;
+    optional bool enforce_detection = 4 [deprecated = true];
+    optional bool align = 5 [deprecated = true];
     optional bool anti_spoofing = 6;
     optional uint32 max_faces = 7;
 }
@@ -120,6 +132,8 @@ message AnalyzeResponse {
         Race race = 8;
         FacialArea facial_area = 9;
         optional SpoofingScores spoofing_scores = 10;
+        FaceQuality face_quality = 11;
+        FacePose face_pose = 12;
     }
 
     repeated Result results = 1;
@@ -133,11 +147,11 @@ message RepresentRequest {
   string image_url = 1;
   optional Models model_name = 2;
   optional Detectors detector_backend = 3;
-  optional bool enforce_detection = 4;
-  optional bool align = 5;
+  optional bool enforce_detection = 4 [deprecated = true];
+  optional bool align = 5 [deprecated = true];
   optional bool anti_spoofing = 6;
   optional uint32 max_faces = 7;
-  optional string normalization = 8;
+  optional string normalization = 8 [deprecated = true];
 }
 
 message RepresentResponse {
@@ -147,6 +161,8 @@ message RepresentResponse {
         double face_confidence = 2;
         FacialArea facial_area = 3;
         optional SpoofingScores spoofing_scores = 4;
+        FaceQuality face_quality = 5;
+        FacePose face_pose = 6;
     }
 
     repeated Results results = 1;
@@ -162,10 +178,10 @@ message VerifyRequest {
     optional Models model_name = 3;
     optional Detectors detector_backend = 4;
     optional DistanceMetrics distance_metric = 5;
-    optional bool enforce_detection = 6;
-    optional bool align = 7;
+    optional bool enforce_detection = 6 [deprecated = true];
+    optional bool align = 7 [deprecated = true];
     optional bool anti_spoofing = 8;
-    optional string normalization = 9;
+    optional string normalization = 9 [deprecated = true];
 }
 
 message VerifyResponse {
@@ -187,6 +203,10 @@ message VerifyResponse {
     optional SpoofingScores img2_spoofing_scores = 10;
     repeated double img1_embedding = 11;
     repeated double img2_embedding = 12;
+    FaceQuality img1_face_quality = 13;
+    FaceQuality img2_face_quality = 14;
+    FacePose img1_face_pose = 15;
+    FacePose img2_face_pose = 16;
 }
 
 // ----------------
