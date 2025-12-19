@@ -126,8 +126,8 @@ class DeepFaceService(DeepFaceServiceServicer):
             logger.debug(f"verif response received: {verif}")
 
             response.verified = verif.verified or False
-            response.distance = verif.distance if verif.distance is not None else math.inf
-            response.threshold = verif.threshold if verif.threshold is not None else math.inf
+            response.distance = verif.distance if verif.distance is not None else 1_000_000_000
+            response.threshold = verif.threshold if verif.threshold is not None else 1_000_000_000
             response.time = verif.time if verif.time is not None else 0.0
             if verif.metric is not None:
                 metric_str = verif.metric.upper()
